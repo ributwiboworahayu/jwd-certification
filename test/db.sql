@@ -1,0 +1,12 @@
+
+CREATE TABLE pemesanan (
+  id INTEGER AUTO_INCREMENT,
+  nama VARCHAR(50) NOT NULL,
+  tgl DATE NOT NULL,
+  jk CHAR(1) NOT NULL,
+  jns_kursi VARCHAR(15) NOT NULL,
+  harga INTEGER NOT NULL,
+  jml_penumpang INTEGER NOT NULL,
+  total_harga INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
