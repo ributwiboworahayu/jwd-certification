@@ -8,6 +8,7 @@
             <div class="row">
                 <label for="nama" class="col-sm-4">Nama Lengkap</label>
                 <div class="form-group  col-sm-8">
+                    <input type="hidden" value="<?= $pemesanan->id ?>" id="ideditpesan">
                     <input type="text" name="nama" class="form-control" id="nama" value="<?= $pemesanan->nama ?>">
                     <?= form_error('nama', '<small class="text-danger pl-3">', '</small>'); ?>
                 </div>
@@ -76,7 +77,7 @@
                 <label class="form-check-label" for="checklis">Saya dan/atau rombongan telah membaca, memahami dan setuju berdasarkan syarat dan ketentuan yang telah ditetapkan,</label>
             </div>
             <div class="text-center">
-                <input type="button" class="btn btn-danger col-md-3" id="countAll" value="Hitung Total Bayar"></input>
+                <!-- <input type="button" class="btn btn-danger col-md-3" id="countAll" value="Hitung Total Bayar"></input> -->
                 <input type="submit" class="btn btn-danger col-md-3" disabled id="pesan" value="Edit Tiket"></input>
                 <a href="<?= base_url('main/datapemesanan') ?>" class="btn btn-danger col-md-3">Batal</a>
             </div>

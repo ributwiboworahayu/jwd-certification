@@ -74,7 +74,6 @@ class Main extends CI_Controller
 
     public function dataPemesanan()
     {
-
         $data['pemesanan'] = $this->db->get('data_pemesanan')->result();
 
         $this->load->view('templates/header');
@@ -163,5 +162,77 @@ class Main extends CI_Controller
         $this->load->view('templates/header');
         $this->load->view('tiket', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function tempatWisata()
+    {
+        $wisata = htmlspecialchars($this->input->post('tempat', true));
+        $harga = $this->input->post('harga');
+
+        $data['tempat'] = $this->db->get_where('tempat_wisata')->result();
+
+        if (!isset($_POST['tempat'])) {
+            $this->load->view('templates/header');
+            $this->load->view('data-tempat', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $data = [
+                'tempat_wisata' => $wisata,
+                'hargatiket' => $harga
+            ];
+
+            $this->db->insert('tempat_wisata', $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            Tempat Wisata Berhasil Ditambah!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>');
+            redirect(base_url('main/tempatwisata'));
+        }
+    }
+
+    public function hapusTempat($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('tempat_wisata');
+    }
+
+    public function getWisata($id = null)
+    {
+        if ($id == null) {
+            $data = $this->db->get('tempat_wisata')->result();
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        } else {
+            $data = $this->db->get_where('tempat_wisata', ['id' => $id])->row();
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
+    }
+
+    public function getEditPesan($id)
+    {
+        $data = $this->db->get_where('data_pemesanan', ['id' => $id])->row();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    public function simpanEditWisata($id)
+    {
+        $wisata = htmlspecialchars($this->input->post('tempat', true));
+        $harga = $this->input->post('harga');
+
+        $data = [
+            'tempat_wisata' => $wisata,
+            'hargatiket' => $harga
+        ];
+
+        $this->db->where('id', $id);
+        $this->db->update('tempat_wisata', $data);
+        $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+        Tempat Wisata Berhasil Diedit!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>');
+        redirect(base_url('main/tempatwisata'));
     }
 }

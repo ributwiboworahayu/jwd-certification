@@ -1,20 +1,25 @@
-
-const tempatWisata = {
-    "Raja Ampat": 50000,
-    "Puncak": 15000,
-    "Monas": 30000
-};
-
+let tempatWisata;
+let whereKey;
+let idPesan = $('#ideditpesan').val();
 $(function () {
-    $.each(tempatWisata, function (key, value) {
-        $('#wisata').append($('<option>', {
-            value: key,
-            text: key
-        }));
-    });
+
+    if (idPesan != undefined) {
+        $.ajax({
+            url: 'http://jwd.co.id/main/geteditpesan/' + idPesan,
+            type: "GET",
+            dataType: "JSON",
+            success: function (data) {
+                whereKey = data.tempat_wisata;
+                dataTempat();
+            }
+        });
+    } else {
+        dataTempat();
+    }
 
     $('#wisata').on('change', function () {
         $('#harga').val(tempatWisata[$('#wisata').val()]);
+        totalHarga();
     });
 
     $('#checklis').on('click', function () {
@@ -37,4 +42,72 @@ $(function () {
         }
     });
 
+    $('#dewasa').on('keyup', function () {
+        totalHarga();
+    });
+
+    $('#anak').on('keyup', function () {
+        totalHarga();
+    });
+
+    $('.btn-edit-tempat').on('click', function () {
+        $('.form-tambah-tempat').prop('hidden', false);
+        $('.title-form-tempat h4').text('FORM EDIT TEMPAT WISATA');
+        $('#tambah').val('Edit');
+        $('.tabel-tempat-wisata').prop('hidden', true);
+        $('#form-wisata').attr('action', 'http://jwd.co.id/main/simpanEditWisata/' + $(this).data('id'));
+        $.ajax({
+            url: 'http://jwd.co.id/main/getwisata/' + $(this).data('id'),
+            type: "GET",
+            dataType: "JSON",
+            success: function (data) {
+                $('#tempat').val(data.tempat_wisata);
+                $('#harga').val(data.hargatiket);
+            }
+        });
+    });
+
+    $('.btn-form-tempat').on('click', function () {
+        $('.form-tambah-tempat').prop('hidden', false);
+        $('.tabel-tempat-wisata').prop('hidden', true);
+    });
+
+    $('.btn-cancel-tempat').on('click', function () {
+        $('.form-tambah-tempat').prop('hidden', true);
+        $('.tabel-tempat-wisata').prop('hidden', false);
+    });
+
 });
+
+function totalHarga() {
+    let total = 0.5 * $('#harga').val() * $('#anak').val() + $('#harga').val() * $('#dewasa').val();
+    $('#total').val(total);
+}
+
+function dataTempat() {
+
+    $.ajax({
+        url: 'http://jwd.co.id/main/getwisata',
+        type: "GET",
+        dataType: "JSON",
+        success: function (data) {
+            tempatWisata = data.reduce((tmpt, current) => {
+                tmpt[current.tempat_wisata] = current.hargatiket;
+                return tmpt;
+            }, {});
+            $.each(tempatWisata, function (key, value) {
+                if (key == whereKey) {
+                    $('#wisata').append(
+                        `<option selected value="` + key + `" > ` + key + `</option>`
+                    );
+                    $('#harga').val(tempatWisata[$('#wisata').val()]);
+                    totalHarga();
+                } else {
+                    $('#wisata').append(
+                        `<option value="` + key + `" > ` + key + `</option>`
+                    );
+                }
+            });
+        }
+    });
+}

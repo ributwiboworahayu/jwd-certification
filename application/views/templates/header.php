@@ -29,6 +29,7 @@
                         Pemesanan
                     </a>
                     <div class="dropdown-menu">
+                        <a class="dropdown-item" href="<?= base_url('main/tempatwisata') ?>">Tempat Wisata</a>
                         <a class="dropdown-item" href="<?= base_url('main/datapemesanan') ?>">Data Pemesanan</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="<?= base_url('main/pemesanan') ?>">Form Pemesanan</a>
